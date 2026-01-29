@@ -1,34 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
-import { storage, Paste } from "@/lib/storage";
-import { randomUUID } from "crypto";
+import { redis } from "@/lib/redis";
+import { nanoid } from "nanoid";
 
-export async function POST(req: NextRequest) {
-  try {
-    const { content, ttl_seconds, max_views } = await req.json();
+export async function POST(req: Request) {
+  const body = await req.json();
+  const id = nanoid();
 
-    const id = randomUUID();
-    const now = Date.now();
+  await redis.set(`paste:${id}`, body);
 
-    const paste: Paste = {
-      id,
-      content,
-      createdAt: new Date().toISOString(),
-      views: 0,
-      expires_at: ttl_seconds ? now + ttl_seconds * 1000 : undefined,
-      max_views,
-    };
-
-    await storage.set(`paste:${id}`, paste);
-
-    return NextResponse.json({
-      success: true,
-      url: `/p/${id}`,
-    });
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 }
-    );
-  }
+  return Response.json({ id });
 }

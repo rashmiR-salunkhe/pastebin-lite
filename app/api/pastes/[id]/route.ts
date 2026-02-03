@@ -1,24 +1,14 @@
-import { NextRequest } from "next/server";
 import { kv } from "@vercel/kv";
 
 export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  req: Request,
+  { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
+  const content = await kv.get(`paste:${params.id}`);
 
-  if (!id) {
-    return new Response("Paste ID missing", { status: 400 });
+  if (!content) {
+    return new Response("Not found", { status: 404 });
   }
 
-  const paste = await kv.get(id);
-
-  if (!paste) {
-    return new Response("Paste not found", { status: 404 });
-  }
-
-  return new Response(JSON.stringify(paste), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+  return Response.json({ content });
 }

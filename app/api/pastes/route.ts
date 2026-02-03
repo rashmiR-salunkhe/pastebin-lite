@@ -11,16 +11,14 @@ export async function POST(req: Request) {
 
     const id = nanoid(8);
 
-    // save paste
     await kv.set(`paste:${id}`, content);
 
-    // return id
     return Response.json({
       success: true,
       id,
     });
   } catch (error) {
-    console.error("POST /api/pastes error:", error);
+    console.error("POST error:", error);
     return new Response("Internal Server Error", { status: 500 });
   }
 }

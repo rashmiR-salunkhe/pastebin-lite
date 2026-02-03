@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-       "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -15,15 +14,12 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["app/*"]
     }
-  },
+  }
+,
   "include": [
     "next-env.d.ts",
     "**/*.ts",

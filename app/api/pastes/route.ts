@@ -1,11 +1,18 @@
-import { redis } from "@/lib/redis";
-import { nanoid } from "nanoid";
-
 export async function POST(req: Request) {
-  const body = await req.json();
-  const id = nanoid();
+  try {
+    const body = await req.json();
 
-  await redis.set(`paste:${id}`, body);
+    const url = new URL("/pipeline", req.url);
 
-  return Response.json({ id });
+    const response = await fetch(url.toString(), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    return Response.json({ success: true });
+  } catch (err) {
+    console.error("POST /api/pastes error:", err);
+    return new Response("Internal Server Error", { status: 500 });
+  }
 }

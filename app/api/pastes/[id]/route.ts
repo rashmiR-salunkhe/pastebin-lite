@@ -1,14 +1,24 @@
-import { redis } from "@/lib/redis";
+import { NextRequest } from "next/server";
+import { kv } from "@vercel/kv";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const paste = await redis.get(`paste:${params.id}`);
+  const { id } = await params;
 
-  if (!paste) {
-    return Response.json({ error: "Not found" }, { status: 404 });
+  if (!id) {
+    return new Response("Paste ID missing", { status: 400 });
   }
 
-  return Response.json(paste);
+  const paste = await kv.get(id);
+
+  if (!paste) {
+    return new Response("Paste not found", { status: 404 });
+  }
+
+  return new Response(JSON.stringify(paste), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 }

@@ -1,23 +1,24 @@
-import { notFound } from "next/navigation";
-import { storage, Paste } from "@/lib/storage";
+interface PageProps {
+  params: { id: string };
+}
 
-export default async function PastePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params; // 👈 IMPORTANT
+export default async function PastePage({ params }: PageProps) {
+  const { id } = params;
 
-  const paste: Paste | null = await storage.get(`paste:${id}`);
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/pastes/${id}`,
+    { cache: "no-store" }
+  );
 
-  if (!paste) notFound();
+  if (!res.ok) {
+    return <div>Paste not found</div>;
+  }
+
+  const data = await res.json();
 
   return (
-    <main style={{ padding: "20px" }}>
-      <h2>Paste</h2>
-      <pre style={{ whiteSpace: "pre-wrap" }}>
-        {paste.content}
-      </pre>
-    </main>
+    <pre style={{ whiteSpace: "pre-wrap" }}>
+      {data.content}
+    </pre>
   );
 }

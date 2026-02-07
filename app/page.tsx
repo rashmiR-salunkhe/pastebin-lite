@@ -1,76 +1,55 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [content, setContent] = useState("");
-  const [ttl, setTtl] = useState("");
-  const [views, setViews] = useState("");
-  const [url, setUrl] = useState("");
+  const [maxViews, setMaxViews] = useState("");
+  const router = useRouter();
 
-  async function createPaste() {
+  const createPaste = async () => {
     const res = await fetch("/api/pastes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         content,
-        ttl_seconds: ttl ? Number(ttl) : undefined,
-        max_views: views ? Number(views) : undefined,
+        maxViews: maxViews ? Number(maxViews) : null,
       }),
     });
 
+    if (!res.ok) {
+      alert("Failed to create paste");
+      return;
+    }
+
     const data = await res.json();
-    setUrl(data.url);
-  }
+
+    // ✅ THIS IS THE MISSING PART
+    router.push(`/p/${data.id}`);
+  };
 
   return (
-    <main style={{ padding: "24px", maxWidth: "700px" }}>
+    <main>
       <h1>Pastebin Lite</h1>
 
-      {/* TEXTAREA */}
       <textarea
-        placeholder="Enter your paste content here..."
-        rows={8}
-        style={{
-          width: "100%",
-          padding: "10px",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          marginBottom: "12px",
-        }}
         value={content}
         onChange={(e) => setContent(e.target.value)}
+        rows={10}
+        cols={80}
       />
 
-      {/* INPUTS */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
+      <div>
         <input
-          type="number"
-          placeholder="TTL seconds"
-          value={ttl}
-          onChange={(e) => setTtl(e.target.value)}
-        />
-
-        <input
-          type="number"
           placeholder="Max views"
-          value={views}
-          onChange={(e) => setViews(e.target.value)}
+          value={maxViews}
+          onChange={(e) => setMaxViews(e.target.value)}
         />
       </div>
-
-      {/* BUTTON */}
-      <button onClick={createPaste}>Create Paste</button>
-
-      {/* RESULT */}
-      {url && (
-        <p style={{ marginTop: "16px" }}>
-          Share URL:{" "}
-          <a href={url} target="_blank">
-            {url}
-          </a>
-        </p>
-      )}
+    <button onClick={createPaste}>
+        Create Paste
+      </button>
     </main>
   );
 }

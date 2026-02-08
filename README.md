@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pastebin Lite
 
-## Getting Started
+A simple Pastebin-like web application that allows users to paste text or code and share it using a unique URL. Built using **Next.js** and **Vercel KV (Redis)** for fast storage and retrieval.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Features
+
+* Create and share text/code snippets
+* Unique shareable link for each paste
+* View count tracking
+* Fast data access using Redis (Vercel KV)
+* Deployed on Vercel
+
+---
+
+## Tech Stack
+
+* **Frontend:** Next.js (React)
+* **Backend:** Next.js API Routes
+* **Database:** Vercel KV (Redis)
+* **Deployment:** Vercel
+* **Version Control:** GitHub
+
+---
+
+## Application Flow
+
+1. User enters text or code in the editor
+2. Clicks on **Create Paste**
+3. Backend generates a unique paste ID
+4. Data is stored in Redis (Vercel KV)
+5. A public URL is generated
+6. Anyone with the link can view the paste
+
+---
+
+## API Endpoints
+
+### Create Paste
+
+```
+POST /api/paste
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Request Body:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+{
+  "content": "Your text or code here"
+}
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Get Paste
 
-## Learn More
+```
+GET /api/paste/{id}
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The following environment variables are required:
 
-## Deploy on Vercel
+```
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+These are automatically added when Vercel KV is connected.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Local Setup
+
+1. Clone the repository
+
+```
+git clone https://github.com/your-username/pastebin-lite.git
+cd pastebin-lite
+```
+
+2. Install dependencies
+
+```
+npm install
+```
+
+3. Run the development server
+
+```
+npm run dev
+```
+
+4. Open in browser
+
+```
+http://localhost:3000
+```
+
+---
+
+## Deployment
+
+* Push code to GitHub
+* Import the repository into Vercel
+* Connect Vercel KV (Redis)
+* Deploy the project
+
+---
+
+## Use Case
+
+This project demonstrates:
+
+* Full-stack development using Next.js
+* REST API creation
+* Redis key-value data handling
+* Cloud deployment using Vercel
+
+---
+
